@@ -1,6 +1,13 @@
 package com.zhaoyuxi.common.utils;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -103,5 +110,35 @@ public class FileUtil {
 		}
 
 	}
+	/**
+	 * 将字符串转化成实体类，并存储到list集合中返回
+	 * @param fileName
+	 * @param constructor
+	 * @throws IOException
+	 * @throws NoSuchMethodException
+	 * @throws SecurityException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 * @throws InvocationTargetException
+	 * @return List
+	 */
+	public static List fileToBean(String fileName, Constructor constructor)
+			throws IOException, NoSuchMethodException, SecurityException, InstantiationException,
+			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
+		File file = new File(fileName);
+		BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+		String lineString = null;
+		List list = new ArrayList();
+		while ((lineString = bufferedReader.readLine()) != null) {
+			String[] split = lineString.split("\\|");
+			Object object = constructor.newInstance(split);
+			list.add(object);
+
+		}
+
+		return list;
+
+	}
 }
